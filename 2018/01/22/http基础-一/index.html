@@ -6,14 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018/1 | </title>
+  <title>http基础(一) | </title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title">
-<meta property="og:url" content="http://yoursite.com/archives/2018/01/index.html">
+  <meta name="description" content="http基础(一) 本文主要说明http的连接管理，分为四个方面  HTTP如何使用TCP连接 TCP连接存在的时延 HTTP的优化 如何管理连接  TCP连接几乎所有的HTTP通信都由TCP/IP承载，TCP为HTTP提供了一条可靠的传输通道，当用输入一个URL时，将经历以下步骤 1.浏览器首先解析出主机名   2.浏览器通过主机名找到IP地址   3.浏览器获得端口号   4.浏览器通过IP地">
+<meta property="og:type" content="article">
+<meta property="og:title" content="http基础(一)">
+<meta property="og:url" content="http://yoursite.com/2018/01/22/http基础-一/index.html">
 <meta property="og:site_name">
+<meta property="og:description" content="http基础(一) 本文主要说明http的连接管理，分为四个方面  HTTP如何使用TCP连接 TCP连接存在的时延 HTTP的优化 如何管理连接  TCP连接几乎所有的HTTP通信都由TCP/IP承载，TCP为HTTP提供了一条可靠的传输通道，当用输入一个URL时，将经历以下步骤 1.浏览器首先解析出主机名   2.浏览器通过主机名找到IP地址   3.浏览器获得端口号   4.浏览器通过IP地">
+<meta property="og:updated_time" content="2018-01-28T09:08:05.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title">
+<meta name="twitter:title" content="http基础(一)">
+<meta name="twitter:description" content="http基础(一) 本文主要说明http的连接管理，分为四个方面  HTTP如何使用TCP连接 TCP连接存在的时延 HTTP的优化 如何管理连接  TCP连接几乎所有的HTTP通信都由TCP/IP承载，TCP为HTTP提供了一条可靠的传输通道，当用输入一个URL时，将经历以下步骤 1.浏览器首先解析出主机名   2.浏览器通过主机名找到IP地址   3.浏览器获得端口号   4.浏览器通过IP地">
   
     <link rel="alternative" href="/atom.xml" title="" type="application/atom+xml">
   
@@ -145,49 +149,185 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-http基础-一" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/22/http基础-一/" class="archive-article-date">
-  	<time datetime="2018-01-22T08:14:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-22</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/22/http基础-一/">http基础(一)</a>
+    <h1 class="article-title" itemprop="name">
+      http基础(一)
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
+        
+        <a href="/2018/01/22/http基础-一/" class="archive-article-date">
+  	<time datetime="2018-01-22T08:14:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="http基础-一"><a href="#http基础-一" class="headerlink" title="http基础(一)"></a>http基础(一)</h1><hr>
+<p><strong>本文主要说明http的连接管理，分为四个方面</strong></p>
+<ul>
+<li>HTTP如何使用TCP连接</li>
+<li>TCP连接存在的时延</li>
+<li>HTTP的优化</li>
+<li>如何管理连接</li>
+</ul>
+<h3 id="TCP连接"><a href="#TCP连接" class="headerlink" title="TCP连接"></a>TCP连接</h3><p><strong>几乎所有的HTTP通信都由TCP/IP承载，TCP为HTTP提供了一条可靠的传输通道，当用输入一个URL时，将经历以下步骤</strong></p>
+<pre><code>1.浏览器首先解析出主机名  
+2.浏览器通过主机名找到IP地址  
+3.浏览器获得端口号  
+4.浏览器通过IP地址和端口号发起连接  
+5.连接建立成功后浏览器发起请求并等待响应
+6.读取响应  
+7.关闭连接
+</code></pre><p><strong>TCP上数据的传输是通过一块块IP分组（很小的数据块）来传输，当HTTP要传送一条报文时，会将数据以流的形式通过一条打开的<br>TCP通道按序传输，TCP收到数据后，会将数据分成许多小数据块封装在IP分组中然后进行传输</strong></p>
+<h3 id="TCP连接存在的时延"><a href="#TCP连接存在的时延" class="headerlink" title="TCP连接存在的时延"></a>TCP连接存在的时延</h3><p> <strong>HTTP位于TCP上层，所以HTTP事务性能主要取决于TCP通道的性能，在HTTP请求的过程中主要存在连接、传输和处理时延</strong></p>
+<ul>
+<li>解析URL所用的时间。如果近期没有访问过该主机，则需要通过DNS解析得到IP地址，需要花费一定的时间</li>
+<li>客户端向服务器发送TCP请求连接，并等待服务器接受。每条TCP连接都有对应的时延，同时有多条连接的话这个时延会叠加上去</li>
+<li>连接建立后，客户端通过连接传输数据，服务器从连接中读取请求报文并处理请求，这也需要响应的时间</li>
+<li>服务器处理完请求后，会回送HTTP响应</li>
+</ul>
+<p><strong> 在客户端向服务器发起连接请求时，需要经历下面三个步骤，成为三次握手  </strong></p>
+<ul>
+<li>客户端向服务器发送一个小的TCP分组，分组中设置了特殊的SYN标记，说明这是一个连接请求</li>
+<li>如果服务器接受连接，就会向客户端返回一个TCP分组，这个分组中的SYN和ACK标记都被置位，说明请求连接已被接受</li>
+<li>最后徐，客户端向服务器回送一条确认消息，通知它连接已成功建立</li>
+</ul>
+<p><strong> 除了这些，TCP中还有许多常见的时延，例如TCP慢启动拥塞控制，TIME_时延和端口耗尽，我们可以看到，当传输少量数据的时候，HTT<br>P事务大部分时间被花费在TCP的建立上，下面我们再看看如何进行优化 </strong></p>
+<h3 id="HTTP的优化"><a href="#HTTP的优化" class="headerlink" title="HTTP的优化"></a>HTTP的优化</h3><p><strong> 通常我们一个Web页面会包含许多内容，包括大量的图片和文字，为了显示这些内容，页面会发起多个请求，如果每个请求都需要建立<br>一个连接，然后再按照顺序创建的话，会使页面带来极差的体验，用户更希望能够同时加载大量的内容，下面列出了几种提高HTTP性能的技术</strong></p>
+<ul>
+<li>并行连接</li>
+<li>持久连接</li>
+<li>管道化连接</li>
+</ul>
+<h5 id="并行连接"><a href="#并行连接" class="headerlink" title="并行连接"></a>并行连接</h5><p><strong>并行连接即HTTP客户端同时打开多条连接，并行执行多个事务，这样做的好处显而易见，可以将多个时延重叠起来，减少浪费的时间<br>，但是并行连接不一定总是更快。如果用户的带宽不足时，可能某个连接占用了大部分的带宽，如果并行执行多个事务，每个事务都去竞争<br>有限的带宽，则每个事务都会缓慢进行，这样带来的性能的提升就很小。而且打开大量连接首先会耗费很多时间和带宽，同时也会消耗很多内存资源，服务器也要同时处理这些连接，<br>对服务器的性能也会造成一定的影响。</strong></p>
+<h5 id="持久连接"><a href="#持久连接" class="headerlink" title="持久连接"></a>持久连接</h5><p><strong> 一个Web页面经常有大量的内容来自同一服务器，当第一条TCP连接传输结束后可能又会建立同一服务器的连接，如果能重复利用之间的<br>连接，那样就可以节省大部分的TCP连接时间消耗。持久连接就是为了解决这样的问题而诞生，它允许hTTP事务处理完成后仍然将连接保持在<br>打开状态以便下次再利用，而普通连接在HTTP事务处理完就会关闭。持久连接也有它的缺点，如果不注意关闭不使用的连接，可能会累积出大量的<br>空闲连接，耗费本地及服务器的资源.  <br><br>于是乎我们就可以将两者结合起来，打开少量的并行连接，每个连接都是持久连接，<br>在HTTP/1.0+中的”keep-alive“和HTTP/1.1中主要使用“persistent”连接。使用keep-alive连接只需要在请求头部加上connection:keep-alive，<br>但是在HTTP/1.1中持久连接是默认激活的，如果需要关闭一条持久连接，只需要在最后一条请求加上Connection:close，不加上则代表连接<br>不关闭</strong>  </p>
+<h5 id="管道化连接"><a href="#管道化连接" class="headerlink" title="管道化连接"></a>管道化连接</h5><p><strong> 管道化连接是在持久连接上进一步的性能优化，它允许在同一条连接上，当一个请求到达服务器时不等待该请求响应，而开始发送下一条请求，<br>这样可以进一步地降低用户等待的时间，但是如果无法确定连接是持久的就不应该使用管道，还要做好连接在任意时刻被关闭的准备，然后重新发出<br>未完成的连接</strong></p>
 
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/01/22/http基础-一/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-  
-    </div></section>
+
   
 
-    
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
+  
+
+  
+
+  
+
+  
 
 
           </div>
@@ -210,8 +350,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
